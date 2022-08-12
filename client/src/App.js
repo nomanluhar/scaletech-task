@@ -6,8 +6,8 @@ import Login from './pages/login';
 import { useSelector } from 'react-redux';
 
 const PrivateRoutes = () => {
-  const { isAuth } = useSelector((state) => state.auth)
-
+  // const { isAuth } = useSelector((state) => state.auth)
+  const isAuth = true
   return <>{isAuth ? <Outlet /> : <Navigate to='/login' />}</>
 }
 

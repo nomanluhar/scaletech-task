@@ -12,18 +12,19 @@ const Dashboard = () => {
     const logout = async () => {
         try {
             await onLogout()
-
+            console.log(unauthenticateUser())
             dispatch(unauthenticateUser())
             localStorage.removeItem('isAuth')
         } catch (error) {
-            console.log(error.response)
+            console.log(error)
         }
     }
 
     const protectedInfo = async () => {
         try {
+            console.log('1')
             const { data } = await fetchProtectedInfo()
-
+            console.log(data)
             setProtectedData(data.info)
 
             setLoading(false)
