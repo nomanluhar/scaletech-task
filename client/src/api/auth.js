@@ -2,11 +2,7 @@ import axios from 'axios'
 axios.defaults.withCredentials = true
 
 export async function onRegistration(registrationData) {
-  return await axios.post('http://localhost:4000/api/register',{
-    headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-    }, registrationData});
+  return await axios.post('http://localhost:4000/api/register',registrationData);
 }
 
 export async function onLogin(loginData) {
