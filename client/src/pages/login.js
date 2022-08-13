@@ -6,7 +6,7 @@ import { authenticateUser } from '../redux/slices/authSlice'
 
 const Login = () => {
     const [values, setValues] = useState({
-        usr_email: '',
+        user_email: '',
         user_password: '',
     })
     const [error, setError] = useState(false)
@@ -20,16 +20,17 @@ const Login = () => {
         e.preventDefault()
 
         try {
-            await onLogin(values)
-            dispatch(authenticateUser())
-
-            localStorage.setItem('isAuth', 'true')
+            await onLogin(values);
+            dispatch(authenticateUser());
+            localStorage.setItem('currentUserEmail',values.user_email)
+            localStorage.setItem('isAuth', true);
         } catch (error) {
-            setError(error.response.data.errors[0].msg)
+            console.log(error)
+            setError(error.response.data.errors[0].msg);
         }
     }
 
-    return (
+    return (    
         <Layout>
             <form onSubmit={(e) => onSubmit(e)} className='container mt-3'>
                 <h1>Login</h1>

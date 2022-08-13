@@ -14,7 +14,7 @@ const Register = () => {
 
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
-    }
+    }   
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -27,8 +27,8 @@ const Register = () => {
             console.log(error)
             setError(error.response.data.errors[0].msg)
             setSuccess('');
-        }
-    }
+        };
+    };
     return (
         <Layout>
             <form onSubmit={(e) => onSubmit(e)} className='container mt-3' autoComplete="off">
@@ -45,7 +45,7 @@ const Register = () => {
                     <label htmlFor='user_email' className='form-label'>
                         Email address
                     </label>
-                    <input onChange={(e) => onChange(e)} type='user_email' className='form-control' id='user_email'
+                    <input onChange={(e) => onChange(e)} type='email' className='form-control' id='user_email'
                         name='user_email' value={values.user_email} placeholder='JohnDoe@gmail.com' required
                     />
                 </div>
@@ -53,7 +53,7 @@ const Register = () => {
                     <label htmlFor='user_password' className='form-label'>
                         Password
                     </label>
-                    <input onChange={(e) => onChange(e)} type='user_password' value={values.user_password} className='form-control'
+                    <input onChange={(e) => onChange(e)} type='password' value={values.user_password} className='form-control'
                         id='user_password' name='user_password' placeholder='Password' required
                     />
                 </div>
