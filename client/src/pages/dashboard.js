@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { fetchProtectedInfo, OnAddContact, onLogout, fetchAllContacts,onEditContact } from '../api/auth'
+import { fetchProtectedInfo, OnAddContact, onLogout, fetchAllContacts, onEditContact, onRemoveContact } from '../api/auth'
 import Layout from '../components/layout'
 import { unauthenticateUser } from '../redux/slices/authSlice'
 
@@ -39,9 +39,8 @@ const Dashboard = () => {
     const protectedInfo = async () => {
         try {
             const { data } = await fetchProtectedInfo();
-
             setProtectedData(data.info)
-
+            console.log(protectedData)
             setLoading(false);
             const response = await fetchAllContacts();
             setTableData(response?.data?.list)
@@ -63,23 +62,29 @@ const Dashboard = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        try {
-            values['currentUserEmail'] = localStorage.getItem('currentUserEmail');
-            if (!isEditMode) {
-                var { data } = await OnAddContact(values)
-            } else {
-                var { data } = await onEditContact(values)
-            }
-            setError('');
-            setSuccess(data.message)
-            funModalOpen();
-            setValues(defaultValue);
-            setEditMode(false);
-            protectedInfo()
-        } catch (error) {
-            console.log(error)
-            // setError(error.response.data.errors[0].msg)
-            // setSuccess('');
+        const { status } = await fetchProtectedInfo();
+        if (status && status == 200) {
+            try {
+                values['currentUserEmail'] = localStorage.getItem('currentUserEmail');
+                if (!isEditMode) {
+                    var { data } = await OnAddContact(values)
+                } else {
+                    var { data } = await onEditContact(values)
+                }
+                setError('');
+                setSuccess(data.message)
+                funModalOpen();
+                setValues(defaultValue);
+                setEditMode(false);
+                protectedInfo();
+            } catch (error) {
+                console.log(error)
+                setError(error.response.data.errors[0].msg)
+                setSuccess('');
+            };
+        } else {
+            console.log('Auth Failed');
+            logout();
         };
     };
 
@@ -90,7 +95,25 @@ const Dashboard = () => {
     };
 
     const onRemove = async (e, item) => {
-        console.log(item)
+        const { status } = await fetchProtectedInfo();
+        if (window.confirm('Do you want to remove?')) {
+            try {
+                if (status && status == 200) {
+                    var { data } = await onRemoveContact(item);
+                    setError('');
+                    setSuccess(data.message);
+                    setValues(defaultValue);
+                    protectedInfo();
+                } else {
+                    console.log('Auth Failed');
+                    logout();
+                };
+            } catch (error) {
+                console.log(error)
+                setError(error.response.data.errors[0].msg);
+                setSuccess('');
+            };
+        };
     };
 
     return loading ? (
@@ -100,7 +123,6 @@ const Dashboard = () => {
     ) : (
         <div>
             <Layout>
-                {/* <button onClick={() => logout()} className='btn btn-primary'>Logout </button> */}
                 <h1>Contact List</h1>
                 {/* <h2>{protectedData}</h2> */}
                 <button type="button" className="btn btn-primary" onClick={funModalOpen}>Add</button>
@@ -122,8 +144,8 @@ const Dashboard = () => {
                                 <td><button type='button' onClick={(e) => onEdit(e, item)} className='btn btn-primary mr-2'>
                                     E
                                 </button><button type='button' onClick={(e) => onRemove(e, item)} className='btn btn-danger'>
-                                    D
-                                </button></td>
+                                        D
+                                    </button></td>
                             </tr>
                         )) : <tr><td>No Data Found</td></tr>}
 
@@ -177,9 +199,10 @@ const Dashboard = () => {
                         </div>
                     </div>
                 }
+                <button onClick={() => logout()} className='btn btn-primary'>Logout </button>
             </Layout>
         </div>
     );
 };
 
-export default Dashboard;
+export default Dashboard; 

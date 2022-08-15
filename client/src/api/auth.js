@@ -35,3 +35,7 @@ export async function OnAddContact(contactInfo) {
 export async function onEditContact(contactInfo) {
   return await axios.post('http://localhost:4000/api/editContact',contactInfo);
 };
+
+export async function onRemoveContact(contactInfo) {
+  return await axios.post('http://localhost:4000/api/removeContact',contactInfo);
+};
